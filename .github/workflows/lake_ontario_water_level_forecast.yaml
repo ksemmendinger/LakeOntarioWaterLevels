@@ -1,0 +1,33 @@
+name: Retrieve Lake Ontario Water Level Forecast
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+
+jobs:
+  retrieve_water_level_forecast:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.8"
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+      - name: Retrieve Water Level Forecast
+        run: |
+          python scrape.py
+      - name: Update git version of Water Level json file
+        run: |
+          if [[ $(git status --porcelain lake_ontario_water_level_forecast.json | wc -l) -gt 0 ]]; then
+            git config user.name "github-actions"
+            git config user.email "github-actions@github.com"
+            git add lake_ontario_water_level_forecast.json
+            git commit -m "Update lake ontario water level file"
+            git push origin main
+          fi
