@@ -1,8 +1,7 @@
 name: Retrieve Lake Ontario Water Level Forecast
 
 on:
-  repository_dispatch:
-    types: manual
+  workflow_dispatch:
   schedule:
     - cron: "0 0 * * *"
 
